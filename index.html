@@ -55,6 +55,7 @@
   .badge{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.06em;padding:5px 10px;border-radius:99px;color:#fff}
   .rname{font-size:34px;font-weight:700;margin:14px 0 2px;line-height:1.25}
   .rtag{font-size:17px;color:var(--muted)}
+  .tie{display:none;font-size:13.5px;background:#efe6d8;border-radius:10px;padding:10px 12px;margin-top:14px;color:var(--ink)}
   .rdesc{font-size:16px;margin-top:20px}
   .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
   .box h3{font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px}
@@ -110,6 +111,7 @@
     <div style="margin-top:14px"><span class="badge sans" id="rbadge"></span></div>
     <div class="rname" id="rname"></div>
     <div class="rtag" id="rtag"></div>
+    <p class="tie sans" id="rtie"></p>
     <p class="rdesc" id="rdesc"></p>
 
     <div class="box"><h3 class="sans">이런 힘이 있어요</h3><p id="rgood"></p></div>
@@ -200,15 +202,15 @@ const QS = [
   {q:"처음엔 찜찜했던 회사 관행이 있다면?", o:{
     ivan:"다들 하니까 그게 맞겠지, 잘 따른다",
     pras:"나한테 손해만 아니면 신경 안 쓴다",
-    sch:"굳이 분위기 깨고 싶지 않다",
+    sch:"농담처럼 한마디 하고 웃으며 넘긴다",
     doc:"비효율을 정리해서 개선안을 낸다",
     ger:"불편하다고 솔직하게 말한다"}},
   {q:"가족과 큰 갈등이 생겼다.", o:{
     ivan:"남들 보기엔 문제없는 집으로 선을 지킨다",
-    pras:"내가 얼마나 서운한지 먼저 말해야 한다",
+    pras:"내가 얼마나 서운했는지 상대가 알아줄 때까지 말한다",
     sch:"일단 덮고 맛있는 거 먹으러 간다",
     doc:"원인과 해결책을 논리적으로 정리해 대화한다",
-    ger:"밑바닥까지 다 꺼내서 끝까지 얘기한다"}},
+    ger:"불편해도 피하지 않고, 상대 얘기까지 끝까지 들으며 풀어간다"}},
   {q:"승진에서 밀렸다.", o:{
     ivan:"남들이 날 어떻게 볼지가 제일 신경 쓰인다",
     pras:"억울함을 주변에 하소연한다",
@@ -240,7 +242,7 @@ const QS = [
     doc:"병문안 날짜를 따로 잡아 일정을 효율적으로 조정한다",
     ger:"약속을 취소하고 병문안 가서 오래 있다 온다"}},
   {q:"오늘 유난히 우울한데 팀 점심 약속이 있다.", o:{
-    ivan:"아무렇지 않은 척 평소처럼 웃으며 간다",
+    ivan:"티 내지 않고 예의 바르게 내 몫은 한다",
     pras:"오늘은 내 기분이 우선이라 빠진다",
     sch:"오히려 더 떠들고 웃으면서 기분을 날린다",
     doc:"일단 가고, 왜 우울한지는 나중에 따져본다",
@@ -294,12 +296,18 @@ function showResult(){
   answers.forEach(a=>{ if(a) score[a]++; });
   const max = Math.max(...ORDER.map(k=>score[k]));
   const tops = ORDER.filter(k=>score[k]===max);
-  let win = tops[0];
+  let win = tops[0], why = "";
   if(tops.length>1){
     const tb = answers[TIEBREAK_Q];
-    if(tops.includes(tb)) win = tb;
-    else for(let i=answers.length-1;i>=0;i--){ if(tops.includes(answers[i])){ win=answers[i]; break; } }
+    if(tops.includes(tb)){ win = tb; why = "Q8(인생에서 가장 중요한 것) 답을 기준으로"; }
+    else for(let i=answers.length-1;i>=0;i--){ if(tops.includes(answers[i])){ win=answers[i]; why = "동점 유형 중 마지막으로 고른 답을 기준으로"; break; } }
   }
+  const tie = document.getElementById("rtie");
+  if(tops.length>1){
+    const others = tops.filter(k=>k!==win).map(k=>TYPES[k].name).join(", ");
+    tie.innerHTML = `<b>${tops.map(k=>TYPES[k].name).join(" · ")} 동점!</b> ${why} ${TYPES[win].name}으로 정했어요. ${others}의 모습도 함께 가지고 있어요.`;
+    tie.style.display = "block";
+  } else { tie.style.display = "none"; }
   const t = TYPES[win];
   const badge = document.getElementById("rbadge");
   badge.textContent = t.who; badge.style.background = t.color;
