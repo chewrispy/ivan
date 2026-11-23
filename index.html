@@ -119,10 +119,10 @@
     <div class="box"><h3 class="sans">소설 속 이 장면</h3><p id="rscene"></p></div>
 
     <div class="box">
-      <h3 class="sans">오늘 나의 팀</h3>
+      <h3 class="sans">오늘 나의 그룹</h3>
       <div class="team">
         <div class="dot" id="tdot"></div>
-        <div><b id="tname"></b><span class="sans">결과 화면을 보여주고 같은 팀끼리 모여주세요</span></div>
+        <div><b id="tname"></b><span class="sans">토론 때 이 그룹으로 손을 들어주세요</span></div>
       </div>
     </div>
 
@@ -319,7 +319,7 @@ function showResult(){
   document.getElementById("rshadow").textContent = t.shadow;
   document.getElementById("rscene").textContent = t.scene;
   document.getElementById("tdot").style.background = t.color;
-  document.getElementById("tname").textContent = t.name.replace("형","") + " 팀";
+  document.getElementById("tname").textContent = t.name.replace("형","") + " 그룹";
   const dist = document.getElementById("dist"); dist.innerHTML = "";
   ORDER.forEach(k=>{
     const r = document.createElement("div"); r.className="drow";
